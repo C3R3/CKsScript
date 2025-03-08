@@ -1,0 +1,99 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+    <!-- Main addon frame -->
+    <Frame name="CKsScriptFrame" toplevel="true" movable="true" enableMouse="true" hidden="true" parent="UIParent">
+        <Size x="400" y="400"/>
+        <Anchors>
+            <Anchor point="CENTER" relativePoint="CENTER" relativeTo="UIParent"/>
+        </Anchors>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString name="$parentTitle" inherits="GameFontNormal" text="CKsScript">
+                    <Anchors>
+                        <Anchor point="TOP" x="0" y="-16"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <!-- Close button -->
+            <Button name="$parentCloseButton" inherits="UIPanelCloseButton">
+                <Anchors>
+                    <Anchor point="TOPRIGHT" x="-3" y="-3"/>
+                </Anchors>
+            </Button>
+            
+            <!-- Checkbox for Disable Loot Warnings -->
+            <CheckButton name="CKsScriptDisableLootWarningsCheckbox" inherits="UICheckButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="20" y="-50"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        CKsScript_ToggleDisableLootWarnings();
+                    </OnClick>
+                </Scripts>
+            </CheckButton>
+            
+            <!-- Checkbox for Faster Auto Loot -->
+            <CheckButton name="CKsScriptFasterAutoLootCheckbox" inherits="UICheckButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="20" y="-80"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        CKsScript_ToggleFasterAutoLoot();
+                    </OnClick>
+                </Scripts>
+            </CheckButton>
+            
+            <!-- Checkbox for Need on Necrotric Runes -->
+            <CheckButton name="CKsScriptNeedOnRunesCheckbox" inherits="UICheckButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="20" y="-110"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        CKsScript_ToggleNeedOnRunes();
+                    </OnClick>
+                </Scripts>
+            </CheckButton>
+            
+            <!-- Checkbox for Need on Invader Scourgestones -->
+            <CheckButton name="CKsScriptNeedOnScourgestonesCheckbox" inherits="UICheckButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="20" y="-140"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        CKsScript_ToggleNeedOnScourgestones();
+                    </OnClick>
+                </Scripts>
+            </CheckButton>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                self:RegisterForDrag("LeftButton");
+                CKsScriptDisableLootWarningsCheckboxText:SetText("Disable Loot Warnings");
+                CKsScriptFasterAutoLootCheckboxText:SetText("Faster Auto Loot");
+                CKsScriptNeedOnRunesCheckboxText:SetText("Need on Necrotic Runes");
+                CKsScriptNeedOnScourgestonesCheckboxText:SetText("Need on Invader Scourgestones");
+                
+                -- Create a simple transparent black background
+                local bg = self:CreateTexture(nil, "BACKGROUND")
+                bg:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Background")
+                bg:SetAllPoints(self)
+                bg:SetAlpha(0.8) -- Make it slightly transparent
+            </OnLoad>
+            <OnDragStart>
+                self:StartMoving();
+            </OnDragStart>
+            <OnDragStop>
+                self:StopMovingOrSizing();
+            </OnDragStop>
+        </Scripts>
+    </Frame>
+
+</Ui>
+
