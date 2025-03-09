@@ -71,14 +71,63 @@
                     </OnClick>
                 </Scripts>
             </CheckButton>
+            
+<!-- Checkbox for Character Alias -->
+<CheckButton name="CKsScriptCharacterAliasCheckbox" inherits="UICheckButtonTemplate">
+    <Anchors>
+        <Anchor point="TOPLEFT" x="20" y="-170"/>
+    </Anchors>
+    <Scripts>
+        <OnClick>
+            CKsScript_ToggleCharacterAlias();
+        </OnClick>
+        <OnEnter>
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+            GameTooltip:SetText("Adds your character alias to the beginning of chat messages");
+            GameTooltip:AddLine("When enabled, your alias will appear before each message you send in parties, raids and guild chat unless the alias matches your current character name.", 1, 1, 1, true);
+            GameTooltip:Show();
+        </OnEnter>
+        <OnLeave>
+            GameTooltip:Hide();
+        </OnLeave>
+    </Scripts>
+</CheckButton>
+
+<!-- EditBox for Character Alias -->
+<EditBox name="CKsScriptCharacterAliasEditBox" letters="12" autoFocus="false" inherits="InputBoxTemplate">
+    <Size x="110" y="20"/>
+    <Anchors>
+        <Anchor point="LEFT" relativeTo="CKsScriptCharacterAliasCheckbox" relativePoint="RIGHT" x="150" y="0"/>
+    </Anchors>
+    <Scripts>
+        <OnEnterPressed>
+            CKsScript_SetCharacterAlias(self:GetText());
+            self:ClearFocus();
+        </OnEnterPressed>
+        <OnEscapePressed>
+            self:ClearFocus();
+        </OnEscapePressed>
+        <OnEnter>
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+            GameTooltip:SetText("Enter desired character alias");
+            GameTooltip:AddLine("Type the name/alias you want displayed before your messages in chat.", 1, 1, 1, true);
+            GameTooltip:AddLine("Press Enter to save", 0.5, 0.5, 1, true);
+            GameTooltip:Show();
+        </OnEnter>
+        <OnLeave>
+            GameTooltip:Hide();
+        </OnLeave>
+    </Scripts>
+</EditBox>
         </Frames>
         <Scripts>
             <OnLoad>
                 self:RegisterForDrag("LeftButton");
                 CKsScriptDisableLootWarningsCheckboxText:SetText("Disable Loot Warnings");
                 CKsScriptFasterAutoLootCheckboxText:SetText("Faster Auto Loot");
-                CKsScriptNeedOnRunesCheckboxText:SetText("Need on Necrotic Runes");
-                CKsScriptNeedOnScourgestonesCheckboxText:SetText("Need on Invader Scourgestones");
+                CKsScriptNeedOnRunesCheckboxText:SetText("Roll need on Necrotic Runes");
+                CKsScriptNeedOnScourgestonesCheckboxText:SetText("Roll need on Invader Scourgestones");
+                CKsScriptCharacterAliasCheckboxText:SetText("Enable chat message alias  - ");
                 
                 -- Create a simple transparent black background
                 local bg = self:CreateTexture(nil, "BACKGROUND")
@@ -96,4 +145,3 @@
     </Frame>
 
 </Ui>
-

@@ -11,6 +11,8 @@ CKS.defaults = {
     fasterAutoLoot = false,
     needOnRunes = false,
     needOnScourgestones = false,
+    useCharacterAlias = false,
+    characterAlias = ""
 }
 
 -- Table to store roll choices
@@ -26,17 +28,64 @@ function CKS:Init()
         CKsScriptDB = CopyTable(self.defaults)
     end
     
+    -- Update CKsScriptDB with any new fields that might not exist
+    for key, value in pairs(self.defaults) do
+        if CKsScriptDB[key] == nil then
+            CKsScriptDB[key] = value
+        end
+    end
+    
+    -- Store player name
+    CKS.playerName = UnitName("player")
+    
     -- Create options panel
     self:CreateOptionsPanel()
     
     -- Register events
     self:RegisterEvents()
     
+    -- Hook chat functions - after initialization is complete
+    self:HookChatFunctions()
+    
     -- Mark as loaded
     self.isLoaded = true
     
     -- Show message
     print("|cFF00FF00CKsScript|r: Addon loaded. Type /cks to open options.")
+end
+
+-- Hook chat message functions to add character alias
+-- Hook chat message functions to add character alias
+function CKS:HookChatFunctions()
+    -- Store original SendChatMessage function
+    CKS.originalSendChatMessage = SendChatMessage
+    
+    -- Replace SendChatMessage with our own version
+    SendChatMessage = function(msg, chatType, language, channel)
+        if CKsScriptDB.useCharacterAlias and CKsScriptDB.characterAlias ~= "" and CKsScriptDB.characterAlias ~= CKS.playerName then
+            -- Debug print to see the chat type and channel
+            -- print("Debug - chatType: " .. tostring(chatType) .. ", channel: " .. tostring(channel))
+            
+            -- Only add character alias prefix for PARTY, RAID, GUILD, INSTANCE_CHAT, and OFFICER
+            if chatType == "PARTY" or 
+               chatType == "RAID" or 
+               chatType == "GUILD" or 
+               chatType == "RAID_WARNING" or
+               chatType == "INSTANCE_CHAT" or
+               chatType == "OFFICER" then
+                -- Add character alias prefix
+                local newMsg = "(" .. CKsScriptDB.characterAlias .. ") " .. msg
+                -- Call original function with modified message
+                CKS.originalSendChatMessage(newMsg, chatType, language, channel)
+            else
+                -- Call original function with unmodified message for other chat types
+                CKS.originalSendChatMessage(msg, chatType, language, channel)
+            end
+        else
+            -- Call original function with unmodified message
+            CKS.originalSendChatMessage(msg, chatType, language, channel)
+        end
+    end
 end
 
 -- Event handling
@@ -183,12 +232,18 @@ function CKS:CreateOptionsPanel()
     local fasterAutoLoot = _G["CKsScriptFasterAutoLootCheckbox"]
     local needOnRunes = _G["CKsScriptNeedOnRunesCheckbox"]
     local needOnScourgestones = _G["CKsScriptNeedOnScourgestonesCheckbox"]
+    local useCharacterAlias = _G["CKsScriptCharacterAliasCheckbox"]
+    local characterAliasEditBox = _G["CKsScriptCharacterAliasEditBox"]
     
     -- Set their checked state based on the saved variables
     disableLootWarnings:SetChecked(CKsScriptDB.disableLootWarnings)
     fasterAutoLoot:SetChecked(CKsScriptDB.fasterAutoLoot)
     needOnRunes:SetChecked(CKsScriptDB.needOnRunes)
     needOnScourgestones:SetChecked(CKsScriptDB.needOnScourgestones)
+    useCharacterAlias:SetChecked(CKsScriptDB.useCharacterAlias)
+    
+    -- Set the edit box text
+    characterAliasEditBox:SetText(CKsScriptDB.characterAlias or "")
     
     -- Connect the toggle functions to the checkboxes
     disableLootWarnings:SetScript("OnClick", function(self)
@@ -209,6 +264,17 @@ function CKS:CreateOptionsPanel()
     needOnScourgestones:SetScript("OnClick", function(self)
         CKsScript_ToggleNeedOnScourgestones()
         self:SetChecked(CKsScriptDB.needOnScourgestones)
+    end)
+    
+    useCharacterAlias:SetScript("OnClick", function(self)
+        CKsScript_ToggleCharacterAlias()
+        self:SetChecked(CKsScriptDB.useCharacterAlias)
+    end)
+    
+    -- Connect the edit box to the set function
+    characterAliasEditBox:SetScript("OnEnterPressed", function(self)
+        CKsScript_SetCharacterAlias(self:GetText())
+        self:ClearFocus()
     end)
     
     -- Save the main frame
@@ -255,4 +321,16 @@ end
 function CKsScript_ToggleNeedOnScourgestones()
     CKsScriptDB.needOnScourgestones = not CKsScriptDB.needOnScourgestones
     CKS:RegisterEvents()
+end
+
+-- Toggle Character Alias setting
+function CKsScript_ToggleCharacterAlias()
+    CKsScriptDB.useCharacterAlias = not CKsScriptDB.useCharacterAlias
+    print("|cFF00FF00CKsScript|r: Character alias " .. (CKsScriptDB.useCharacterAlias and "enabled" or "disabled"))
+end
+
+-- Set Character Alias
+function CKsScript_SetCharacterAlias(alias)
+    CKsScriptDB.characterAlias = alias
+    print("|cFF00FF00CKsScript|r: Character alias set to '" .. alias .. "'")
 end
