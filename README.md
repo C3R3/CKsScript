@@ -6,10 +6,13 @@ This a replacement addon for Necrotic Rune Autoloot. I decided to split off into
 
 Currently, this addon has the following features:
 
+**LOOT FEATURES**
 - Auto-need Necrotic Runes & Invader Scourgestones 
 - Bypass BOP prompts
 - Fast Loot
 
-Usage:
+**CHAT FEATURES**
+- Adds an alias to chat messages sent to Party, Raid and Guild chat.
 
+**Usage:**
 -  Type /cks to open a menu to configure the addon.
