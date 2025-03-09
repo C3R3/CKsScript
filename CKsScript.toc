@@ -1,7 +1,7 @@
 ## Interface: 30403
 ## Title: CKsScript
 ## Notes: Enhances the World of Warcraft user interface with quality of life improvements.
-## Version: 1.0
+## Version: 1.1
 ## Author: CK
 ## SavedVariables: CKsScriptDB
 ## SavedVariablesPerCharacter: CKsScriptCharDB
