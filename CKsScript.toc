@@ -1,4 +1,4 @@
-## Interface: 30403
+## Interface: 11506, 11507
 ## Title: CKsScript
 ## Notes: Enhances the World of Warcraft user interface with quality of life improvements.
 ## Version: 1.1
@@ -9,4 +9,3 @@
 # Library files
 CKsScript.xml
 CKsScript.lua
-
